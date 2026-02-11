@@ -1,0 +1,13 @@
+# data
+data/raw/
+*.parquet
+*.gpkg
+*.tif
+*.zip
+
+# notebooks
+.ipynb_checkpoints/
+
+# envs
+.venv/
+.env
