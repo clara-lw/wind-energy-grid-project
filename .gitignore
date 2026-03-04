@@ -1,5 +1,6 @@
 # data
 data/raw/
+data/clean_data/
 *.parquet
 *.gpkg
 *.tif
