@@ -12,3 +12,7 @@ data/clean_data/
 # envs
 .venv/
 .env
+
+# Python bytecode
+__pycache__/
+*.py[cod]
