@@ -21,7 +21,7 @@ keep_cols =  ["Ref ID",
     "Country"]
 
 df_clean = battery[keep_cols]
-
+df_clean = df_clean[df_clean["Country"]!="Northern Ireland"]
 df_clean = df_clean.dropna(subset=["X-coordinate", "Y-coordinate"])
 
 gdf = gpd.GeoDataFrame(
