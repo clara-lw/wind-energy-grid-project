@@ -29,7 +29,7 @@ ax2.set_title('Current battery storage locations and capacity')
 plt.savefig('outputs/figures/current_battery_storage_map.png', dpi=300, bbox_inches='tight')
 
 #planned
-planned_battery_storage_df = battery_storage_df[battery_storage_df["Development Status (short)"].isin(["Planning Permission Expired", "Under Construction"])]
+planned_battery_storage_df = battery_storage_df[battery_storage_df["Development Status (short)"].isin(["Awaiting Construction", "Application Submitted"])]
 planned_bat_lats = planned_battery_storage_df["Latitude"]
 planned_bat_lons = planned_battery_storage_df["Longitude"]
 planned_bat_cap = planned_battery_storage_df["Installed Capacity (MWelec)"]
