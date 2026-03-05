@@ -23,6 +23,7 @@ keep_cols = [
 df_clean = messy_wind_data[keep_cols]
 
 df_clean = df_clean[df_clean["Development Status (short)"]=="Operational"]
+df_clean = df_clean[df_clean["Country"]!="Northern Ireland"]
 
 df_clean = df_clean.dropna(subset=["X-coordinate", "Y-coordinate"])
 
