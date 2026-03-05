@@ -44,6 +44,6 @@ cols = [
 
 subset_table = subset[cols]
 
-subset_table.to_csv("outputs/optimal_planned_bess_units.csv", index=False)
+subset_table.to_csv("outputs/tables/optimal_planned_bess_units.csv", index=False)
 
 
