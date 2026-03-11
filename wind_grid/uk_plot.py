@@ -6,6 +6,16 @@ import cartopy.feature as cfeature
 import matplotlib.colors as mcolors
 
 def plot_map_basic():
+    """Method to plot a simple map of the UK.
+
+    Returns
+    -------
+    figure
+        The figure object.
+    axes
+        The axes object.
+    """
+    
     fig = plt.figure(figsize=(9,10))
     ax = plt.axes(projection=ccrs.PlateCarree())
 
@@ -25,6 +35,14 @@ def plot_map_basic():
 
 
 def plot_map_log_stations(cap, lons, lats):
+    """Method to plot a map of the UK with specific locations colored and sized by their value.
+    Returns
+    -------
+    figure
+        The figure object.
+    axes
+        The axes object.
+    """
     fig, ax = plot_map_basic()
     sizes = 20 + 180 * (np.sqrt(cap) / np.sqrt(np.nanmax(cap) if np.nanmax(cap) > 0 else 1))
 

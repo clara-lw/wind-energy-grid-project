@@ -8,6 +8,15 @@ from shapely.ops import unary_union, polygonize
 
 
 def extend_linestring(ls: LineString, extend_m=30000):
+    
+    """Method to extend linestrings
+
+    Returns
+    -------
+    LineString
+        The extended linestring
+    """
+    
     coords = list(ls.coords)
     if len(coords) < 2:
         return ls
@@ -38,6 +47,15 @@ def extend_linestring(ls: LineString, extend_m=30000):
 
 def clip_to_frame_as_lines(geom, frame_poly):
     
+    """Method to clip linestrings to frame boundary, 
+    extending them first to ensure they intersect the frame boundary.
+
+    Returns
+    -------
+    shapely.geometry.base.BaseGeometry
+        The clipped geometry.
+    """
+    
     if geom.geom_type == "LineString":
         ext = extend_linestring(geom)
         return ext.intersection(frame_poly)
@@ -64,12 +82,27 @@ def bounds_are_finite(g):
 
 
 def load_boundaries_lines_csv(path, crs="EPSG:4326"):
+    """Method to take a csv file and load the geometry column as a GeoDataFrame with the specified CRS.
+
+    Returns
+    -------
+    gpd.GeoDataFrame
+        The loaded GeoDataFrame
+    """
+
     df = pd.read_csv(path)
     df["geometry"] = df["geometry"].apply(wkt.loads)
     return gpd.GeoDataFrame(df, geometry="geometry", crs=crs)
 
 
 def load_gb_frame(pad_m=5000, epsg=27700):
+    """Method to make frame from the GB coastline, with an added buffer.
+
+    Returns
+    -------
+    shapely.geometry.Polygon, shapely.geometry.LineString
+        The frame polygon and the frame boundary line.
+    """
     url = "https://naturalearth.s3.amazonaws.com/110m_cultural/ne_110m_admin_0_countries.zip"
     world = gpd.read_file(url).to_crs(epsg=epsg)
     gb = world[world["ISO_A3"] == "GBR"]
@@ -80,8 +113,16 @@ def load_gb_frame(pad_m=5000, epsg=27700):
     return frame_poly, frame_line
 
 
-def build_areas_from_boundaries(boundaries_gdf_4326, pad_m=5000):
-    boundaries_m = boundaries_gdf_4326.to_crs(epsg=27700)
+def build_areas_from_boundaries(boundaries_gdf, pad_m=5000):
+    """Method to take the frame and bounaries and turn them into areas,
+    by cutting the frame with the boundaries and polygonizing the result.
+
+    Returns
+    -------
+    gpd.GeoDataFrame
+        The areas as a GeoDataFrame with an area_id column.
+    """
+    boundaries_m = boundaries_gdf.to_crs(epsg=27700)
     frame_poly, frame_line = load_gb_frame(pad_m=pad_m, epsg=27700)
 
     cut_lines = []
@@ -106,6 +147,13 @@ def build_areas_from_boundaries(boundaries_gdf_4326, pad_m=5000):
 
 
 def capacity_sum_within_areas(points_df, lon_col, lat_col, value_col, areas_gdf):
+    """Method to sum the values of points within areas, by doing a spatial join.
+    
+    Returns 
+    -------
+    pd.Series
+        A series with the area_id as index and the summed values as values.
+    """
     points_gdf = gpd.GeoDataFrame(
         points_df.copy(),
         geometry=gpd.points_from_xy(points_df[lon_col], points_df[lat_col]),
@@ -124,6 +172,13 @@ def capacity_sum_within_areas(points_df, lon_col, lat_col, value_col, areas_gdf)
 
 
 def attach_capacity_and_labels(areas_gdf, capacity_series, capacity_name="wind_mw"):
+    """Method to attach the capacity values to the areas, and also add label coordinates for plotting.
+
+    Returns
+    -------
+    gpd.GeoDataFrame
+        The areas with attached capacity values and label coordinates.
+    """
     cap_df = capacity_series.rename(capacity_name).reset_index()
 
     out = areas_gdf.merge(cap_df, on="area_id", how="left")
